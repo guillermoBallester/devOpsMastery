@@ -37,7 +37,10 @@ func NewServer(port int) *Server {
 	// Health check
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+		err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+		if err != nil {
+			return //TODO error
+		}
 	})
 
 	// API v1 routes
@@ -45,11 +48,14 @@ func NewServer(port int) *Server {
 		// Hello world endpoint
 		r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]string{
+			err := json.NewEncoder(w).Encode(map[string]string{
 				"message":   "Hello, DevOps World!",
 				"status":    "success",
 				"timestamp": time.Now().Format(time.RFC3339),
 			})
+			if err != nil {
+				return //TODO error
+			}
 		})
 	})
 
