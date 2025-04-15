@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/guillermoBallester/devOpsMastery/src/internal/config"
+	"github.com/guillermoBallester/devOpsMastery/src/internal/router"
 	"github.com/guillermoBallester/devOpsMastery/src/internal/server"
 	"log"
 	"os"
@@ -16,7 +17,12 @@ func main() {
 		log.Fatalf("Error loading config: %v\n", err)
 	}
 
-	srv := server.NewServer(cfg.Server.HTTP.Port)
+	r := router.NewRouter()
+
+	srv := server.NewServer(r.Handler(), cfg.Server.HTTP.Port)
+	if err := srv.Start(); err != nil {
+		log.Fatalf("Server error: %v", err)
+	}
 
 	// Handle graceful shutdown
 	go func() {
