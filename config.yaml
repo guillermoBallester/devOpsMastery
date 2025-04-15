@@ -1,3 +1,4 @@
 server:
-  port: 8080
-  timeout: 30s
+  http:
+    port: 8080
+    timeout: 30s

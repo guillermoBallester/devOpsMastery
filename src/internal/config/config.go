@@ -11,10 +11,14 @@ import (
 )
 
 type Config struct {
-	Server serverCfg `mapstructure:"server"`
+	Server ServerConfig `mapstructure:"server"`
 }
 
-type serverCfg struct {
+type ServerConfig struct {
+	HTTP HTTPConfig `mapstructure:"http"`
+}
+
+type HTTPConfig struct {
 	Port    int           `mapstructure:"port"`
 	Timeout time.Duration `mapstructure:"timeout"`
 }

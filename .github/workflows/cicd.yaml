@@ -7,34 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: Build and Test
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - name: Run golangci-lint
+        run: golangci-lint run ./...
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.24'
-
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: go mod download
-
-      - name: Run linting
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: latest
-
-      - name: Run tests
-        run: go test -v ./... -coverprofile=coverage.out
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.out
-
+          go-version: '1.23'
       - name: Build
-        run: go build -v ./src/cmd/main.go
+        run: go build -v ./...
+      - name: Test
+        run: go test -v ./...
