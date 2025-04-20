@@ -19,8 +19,11 @@ type ServerConfig struct {
 }
 
 type HTTPConfig struct {
-	Port    int           `mapstructure:"port"`
-	Timeout time.Duration `mapstructure:"timeout"`
+	Port            int           `mapstructure:"port"`
+	ReadTimeout     time.Duration `mapstructure:"readTimeout"`
+	WriteTimeout    time.Duration `mapstructure:"writeTimeout"`
+	IdleTimeout     time.Duration `mapstructure:"idleTimeout"`
+	ShutdownTimeout time.Duration `mapstructure:"shutdownTimeout"`
 }
 
 func LoadConfig() (*Config, error) {

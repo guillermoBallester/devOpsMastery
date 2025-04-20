@@ -2,7 +2,6 @@ package connection
 
 import (
 	"github.com/go-chi/chi/v5/middleware"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -71,8 +70,6 @@ func (m *Manager) registerConnection(requestID string, info *Info) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	log.Println("Registering connection", requestID)
-
 	m.activeConnections[requestID] = info
 }
 
@@ -80,8 +77,6 @@ func (m *Manager) registerConnection(requestID string, info *Info) {
 func (m *Manager) unregisterConnection(requestID string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
-	log.Println("unregistering connection", requestID)
 
 	delete(m.activeConnections, requestID)
 }

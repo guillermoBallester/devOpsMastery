@@ -1,4 +1,7 @@
 server:
   http:
-    port: 8080
-    timeout: 30s
+    port: 8081
+    readTimeout: 15s
+    writeTimeout: 15s
+    idleTimeout: 60s
+    shutdownTimeout: 30s
