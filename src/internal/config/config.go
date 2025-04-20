@@ -61,6 +61,6 @@ func LoadConfig() (*Config, error) {
 }
 
 func setDefaults(v *viper.Viper) {
-	v.SetDefault("server.port", 8081)
-	v.SetDefault("server.timeout", "30s")
+	v.SetDefault("server.http.port", 8081)
+	v.SetDefault("server.http.shutdownTimeout", "30s")
 }
