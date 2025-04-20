@@ -4,19 +4,22 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/guillermoBallester/devOpsMastery/src/internal/connection"
 	"github.com/guillermoBallester/devOpsMastery/src/internal/handler"
 	"github.com/guillermoBallester/devOpsMastery/src/internal/service"
 	"time"
 )
 
 type Router struct {
-	router *chi.Mux
+	router  *chi.Mux
+	connMgr *connection.Manager
 }
 
 func NewRouter() *Router {
 	r := chi.NewRouter()
 
-	setupMiddleware(r)
+	connMgr := connection.NewManager(1000)
+	setupMiddleware(r, connMgr)
 
 	healthRoutes := NewHealthRoutes(handler.NewHealthHandler())
 	apiRoutes := NewAPIRoutes(handler.NewHelloHandler(service.NewHelloService()))
@@ -25,7 +28,8 @@ func NewRouter() *Router {
 	apiRoutes.Register(r)
 
 	return &Router{
-		router: r,
+		router:  r,
+		connMgr: connMgr,
 	}
 }
 
@@ -34,7 +38,8 @@ func (r *Router) Handler() chi.Router {
 	return r.router
 }
 
-func setupMiddleware(r *chi.Mux) {
+func setupMiddleware(r *chi.Mux, mgr *connection.Manager) {
+	r.Use(mgr.Middleware())
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
@@ -49,4 +54,8 @@ func setupMiddleware(r *chi.Mux) {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+}
+
+func (r *Router) GetConnectionManager() *connection.Manager {
+	return r.connMgr
 }

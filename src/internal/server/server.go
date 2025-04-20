@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-chi/chi/v5"
+	"github.com/guillermoBallester/devOpsMastery/src/internal/connection"
+	"github.com/guillermoBallester/devOpsMastery/src/internal/router"
 	"log"
 	"net/http"
 	"os"
@@ -16,18 +17,20 @@ import (
 type Server struct {
 	httpServer *http.Server
 	port       int
+	connMgr    *connection.Manager
 }
 
-func NewServer(r chi.Router, port int) *Server {
+func NewServer(r *router.Router, port int) *Server {
 	return &Server{
 		port: port,
 		httpServer: &http.Server{
 			Addr:         fmt.Sprintf(":%d", port),
-			Handler:      r,
+			Handler:      r.Handler(),
 			ReadTimeout:  15 * time.Second,
 			WriteTimeout: 15 * time.Second,
 			IdleTimeout:  60 * time.Second,
 		},
+		connMgr: r.GetConnectionManager(),
 	}
 }
 

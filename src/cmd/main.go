@@ -19,7 +19,7 @@ func main() {
 
 	r := router.NewRouter()
 
-	srv := server.NewServer(r.Handler(), cfg.Server.HTTP.Port)
+	srv := server.NewServer(r, cfg.Server.HTTP.Port)
 	if err := srv.Start(); err != nil {
 		log.Fatalf("Server error: %v", err)
 	}
